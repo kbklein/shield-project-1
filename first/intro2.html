@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHIELD - Advanced Protection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e90ff;
+            --primary-glow: #4285f4;
+            --secondary: #00b7eb;
+            --accent: #ff6b00; /* Orange dot color */
+            --dark-blue: #0a1f3d;
+            --deep-blue: #021b39;
+            --text: #ffffff;
+        }
+
+        body {
+            background: #000;
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden;
+            color: var(--text);
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .intro-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: radial-gradient(circle at center, var(--deep-blue) 0%, #000814 60%, #000 100%);
+            position: relative;
+            overflow: hidden;
+            opacity: 1;
+            transition: opacity 2s ease;
+        }
+
+        /* Cyber Grid Background */
+        .cyber-grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(to right, rgba(30, 144, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 144, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridMove 60s linear infinite;
+            opacity: 0;
+            animation: gridFadeIn 3s ease-in forwards;
+        }
+
+        /* Scanning Background */
+        .scan-bg {
+            position: absolute;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                rgba(0, 225, 255, 0.1) 10%, 
+                rgba(0, 225, 255, 0.2) 50%, 
+                rgba(0, 225, 255, 0.1) 90%, 
+                transparent 100%);
+            animation: scanEffect 4s infinite linear;
+            opacity: 0;
+            animation: scanFadeIn 2s 1s forwards;
+        }
+
+        /* Digital Protection Sphere */
+        .protection-sphere {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--dark-blue) 0%, transparent 70%);
+            box-shadow: 
+                inset 0 0 40px var(--primary-glow),
+                0 0 80px rgba(66, 133, 244, 0.2);
+            opacity: 0;
+            animation: sphereFade 3s ease-in forwards, sphereRotate 30s linear infinite;
+        }
+
+        /* Enhanced Logo Animation */
+        .logo-wrapper {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            z-index: 10;
+            transform-style: preserve-3d;
+            perspective: 800px;
+        }
+
+        /* Shield Background with Gradient and Glow */
+        .shield-bg {
+            position: absolute;
+            width: 230px;
+            height: 280px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            clip-path: path('M115,0 L0,60 L0,180 C0,240 50,280 115,320 C180,280 230,240 230,180 L230,60 Z');
+            background: linear-gradient(135deg, #003B8E, #0062E0, #0078FF);
+            opacity: 0;
+            box-shadow: 0 0 40px rgba(66, 133, 244, 0.5);
+            animation: shieldAppear 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) 2s forwards;
+            z-index: 9;
+        }
+
+        /* Inner Shield with Subtle Glow */
+        .shield-inner {
+            position: absolute;
+            width: 190px;
+            height: 230px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            clip-path: path('M95,10 L10,60 L10,160 C10,210 45,240 95,275 C145,240 180,210 180,160 L180,60 Z');
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            z-index: 10;
+            animation: innerShieldAppear 1.5s ease-out 2.5s forwards;
+        }
+
+        /* Logo Circle with Enhanced Reveal */
+        .logo-circle {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0) rotateY(90deg);
+            background: radial-gradient(circle at center, #4285f4 0%, #1e90ff 70%, #0062E0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 0 30px var(--primary-glow), 
+                0 0 60px var(--secondary),
+                inset 0 0 20px rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            animation: logoReveal 1.8s cubic-bezier(0.34, 1.56, 0.64, 1) 3s forwards, circlePulse 3s infinite alternate 5s;
+            z-index: 11;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Energy Ring with Dynamic Effects */
+        .energy-ring {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(66, 133, 244, 0.8);
+            opacity: 0;
+            animation: ringAppear 1s ease-out 4s forwards, ringRotate 15s linear infinite 5s;
+            z-index: 12;
+        }
+
+        .energy-ring::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 1px solid rgba(0, 183, 235, 0.3);
+            border-radius: 50%;
+            animation: pulseRing 2s ease-out infinite;
+        }
+
+        /* S Letter with Enhanced Glow */
+        .logo-s {
+            font-size: 120px;
+            font-weight: 900;
+            color: var(--text);
+            transform: translateY(5px) scale(0);
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 40px rgba(66, 133, 244, 0.6);
+            opacity: 0;
+            animation: letterAppear 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) 3.5s forwards, letterGlow 3s infinite alternate 5s;
+        }
+
+        /* Orange Dot with Orbit */
+        .logo-dot {
+            position: absolute;
+            top: 15%;
+            right: 15%;
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 15px var(--accent),
+                0 0 30px rgba(255, 107, 0, 0.5);
+            transform: scale(0);
+            opacity: 0;
+            animation: dotAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 4.2s forwards, dotPulse 2s infinite alternate 5s;
+            z-index: 15;
+        }
+
+        /* Scanning Lines Effect */
+        .scan-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(30, 144, 255, 0.03) 2px,
+                rgba(30, 144, 255, 0.03) 4px
+            );
+            opacity: 0;
+            animation: linesAppear 2s ease 2s forwards;
+            pointer-events: none;
+        }
+
+        /* SHIELD Text with Enhanced Reveal */
+        .shield-text {
+            font-size: 100px;
+            font-weight: 900;
+            letter-spacing: 20px;
+            margin-top: 40px;
+            background: linear-gradient(to right, #fff, var(--primary), #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 25px rgba(66, 133, 244, 0.8));
+            opacity: 0;
+            transform: translateY(50px);
+            animation: textReveal 2s ease-out 5s forwards;
+        }
+
+        /* Tagline */
+        .tagline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            color: #f0f0f0;
+            margin-top: 30px;
+            text-align: center;
+            max-width: 800px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: taglineReveal 2s ease-out 7s forwards;
+            text-shadow: 0 0 15px rgba(66, 133, 244, 0.5);
+        }
+
+        /* Simplified Credits Section (Team Members Removed) */
+        .credits-container {
+            position: absolute;
+            bottom: 20px; /* Positioned low as previously adjusted */
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            z-index: 100;
+            animation: creditsAppear 2s ease-out 9s forwards;
+        }
+
+        .credits-panel {
+            background: rgba(10, 31, 61, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(66, 133, 244, 0.5);
+            border-radius: 15px;
+            padding: 15px 30px; /* Reduced padding since there's less content */
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(66, 133, 244, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .credits-message {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(66, 133, 244, 0.5);
+            position: relative;
+        }
+
+        .credits-message::before, .credits-message::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .credits-message::before { left: -50px; }
+        .credits-message::after { right: -50px; }
+
+        /* Particle System */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatUpward var(--duration) ease-in-out var(--delay) infinite;
+        }
+
+        /* Digital Data Visualization */
+        .data-flow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            animation: dataAppear 2s ease-in 2.5s forwards;
+        }
+
+        .data-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--primary) 50%, 
+                transparent 100%);
+            opacity: 0.5;
+            transform-origin: center left;
+        }
+
+        /* Binary Code Background */
+        .binary-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            font-family: monospace;
+            color: rgba(66, 133, 244, 0.1);
+            font-size: 12px;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0;
+            animation: binaryAppear 3s ease-in 1s forwards;
+        }
+
+        .binary-column {
+            position: absolute;
+            top: -100%;
+            width: 20px;
+            text-align: center;
+            animation: binaryDrop var(--duration) linear infinite var(--delay);
+        }
+
+        /* Security Scan Effect */
+        .security-scan {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--secondary) 50%, 
+                transparent 100%);
+            top: 50%;
+            opacity: 0;
+            box-shadow: 0 0 15px var(--secondary), 0 0 30px var(--primary);
+            animation: scanStart 6s ease-in 2s forwards, scanMove 3s ease-in-out 8s infinite;
+        }
+
+        /* Skip Button */
+        .skip-button {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            padding: 10px 20px;
+            background: rgba(10, 31, 61, 0.7);
+            border: 1px solid rgba(66, 133, 244, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 1s ease 2s forwards;
+            backdrop-filter: blur(5px);
+        }
+
+        .skip-button:hover {
+            background: rgba(66, 133, 244, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 20px rgba(66, 133, 244, 0.5);
+        }
+
+        /* Loading Progress at Bottom */
+        .loading-bar-container {
+            position: absolute;
+            bottom: 80px;
+            width: 300px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            opacity: 0;
+            animation: loadingAppear 1s ease 1s forwards, loadingFade 1s ease 9s forwards;
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            animation: loading 8s linear 1s forwards;
+        }
+
+        .loading-text {
+            position: absolute;
+            bottom: 90px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: loadingAppear 1s ease 1s forwards, loadingFade 1s ease 9s forwards;
+        }
+
+        /* Animation Keyframes */
+        @keyframes gridFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 0.3; }
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        @keyframes scanFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 0.15; }
+        }
+
+        @keyframes scanEffect {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        @keyframes sphereFade {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        @keyframes sphereRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes shieldAppear {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes innerShieldAppear {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+        }
+
+        @keyframes logoReveal {
+            0% { 
+                transform: translate(-50%, -50%) scale(0) rotateY(90deg); 
+                opacity: 0; 
+                box-shadow: 0 0 0 transparent; 
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2) rotateY(0deg); 
+                opacity: 1; 
+                box-shadow: 
+                    0 0 50px var(--primary-glow), 
+                    0 0 100px var(--secondary),
+                    inset 0 0 40px rgba(255, 255, 255, 0.5);
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg); 
+                opacity: 1; 
+                box-shadow: 
+                    0 0 30px var(--primary-glow), 
+                    0 0 60px var(--secondary),
+                    inset 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        @keyframes circlePulse {
+            0% { box-shadow: 0 0 30px var(--primary-glow), 0 0 60px var(--secondary); }
+            100% { box-shadow: 0 0 50px var(--primary-glow), 0 0 100px var(--secondary); }
+        }
+
+        @keyframes letterAppear {
+            0% { transform: translateY(5px) scale(0); opacity: 0; }
+            50% { transform: translateY(5px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(5px) scale(1); opacity: 1; }
+        }
+
+        @keyframes letterGlow {
+            0% { 
+                text-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.8),
+                    0 0 40px rgba(66, 133, 244, 0.6);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 30px rgba(255, 255, 255, 1),
+                    0 0 60px rgba(66, 133, 244, 0.8),
+                    0 0 90px rgba(66, 133, 244, 0.4);
+            }
+        }
+
+        @keyframes dotAppear {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes dotPulse {
+            0% { box-shadow: 0 0 15px var(--accent), 0 0 30px rgba(255, 107, 0, 0.5); }
+            100% { box-shadow: 0 0 25px var(--accent), 0 0 50px rgba(255, 107, 0, 0.5); }
+        }
+
+        @keyframes ringAppear {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes ringRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes pulseRing {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.1); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        @keyframes linesAppear {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes textReveal {
+            0% { opacity: 0; transform: translateY(50px); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        @keyframes taglineReveal {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes dataAppear {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes floatUpward {
+            0% { transform: translateY(100vh) translateX(var(--x)); opacity: 0; }
+            10% { opacity: var(--opacity); }
+            90% { opacity: var(--opacity); }
+            100% { transform: translateY(-100px) translateX(calc(var(--x) + var(--drift))); opacity: 0; }
+        }
+
+        @keyframes binaryAppear {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes binaryDrop {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        @keyframes scanStart {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.6; }
+        }
+
+        @keyframes scanMove {
+            0% { transform: translateY(-150px); }
+            50% { transform: translateY(150px); }
+            100% { transform: translateY(-150px); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes creditsAppear {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes loadingAppear {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes loadingFade {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes loading {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        .fade-out {
+            animation: fadeOut 2s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .shield-text { font-size: 60px; letter-spacing: 10px; margin-top: 30px; }
+            .tagline { font-size: 18px; max-width: 90%; margin-top: 20px; }
+            .logo-wrapper { width: 180px; height: 180px; }
+            .logo-circle { width: 160px; height: 160px; }
+            .logo-s { font-size: 100px; }
+            .logo-dot { width: 20px; height: 20px; }
+            .shield-bg { width: 180px; height: 220px; }
+            .shield-inner { width: 150px; height: 180px; }
+            .energy-ring { width: 170px; height: 170px; }
+            .protection-sphere { width: 400px; height: 400px; }
+            .credits-panel { padding: 10px 20px; }
+            .credits-message { font-size: 14px; }
+            .credits-container { bottom: 15px; }
+            .loading-bar-container { bottom: 70px; }
+            .loading-text { bottom: 80px; }
+        }
+
+        @media (max-width: 480px) {
+            .shield-text { font-size: 40px; letter-spacing: 5px; margin-top: 20px; }
+            .tagline { font-size: 14px; margin-top: 15px; }
+            .logo-wrapper { width: 150px; height: 150px; }
+            .logo-circle { width: 130px; height: 130px; }
+            .logo-s { font-size: 80px; }
+            .logo-dot { width: 15px; height: 15px; }
+            .shield-bg { width: 150px; height: 180px; }
+            .shield-inner { width: 120px; height: 150px; }
+            .energy-ring { width: 140px; height: 140px; }
+            .protection-sphere { width: 300px; height: 300px; }
+            .credits-message { font-size: 12px; }
+            .credits-message::before, .credits-message::after { width: 30px; }
+            .credits-message::before { left: -40px; }
+            .credits-message::after { right: -40px; }
+            .credits-container { bottom: 10px; }
+            .loading-bar-container { bottom: 60px; }
+            .loading-text { bottom: 70px; }
+            .skip-button { top: 15px; right: 15px; padding: 8px 16px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="intro-container">
+        <!-- Background Elements -->
+        <div class="cyber-grid"></div>
+        <div class="scan-bg"></div>
+        <div class="scan-lines"></div>
+        <div class="binary-bg" id="binaryBg"></div>
+        
+        <!-- Digital Protection Elements -->
+        <div class="protection-sphere"></div>
+        <div class="security-scan"></div>
+        
+        <!-- Particles & Data Flow -->
+        <div class="particles" id="particles"></div>
+        <div class="data-flow" id="dataFlow"></div>
+        
+        <!-- Enhanced Logo Animation -->
+        <div class="logo-wrapper">
+            <div class="shield-bg"></div>
+            <div class="shield-inner"></div>
+            <div class="logo-circle">
+                <span class="logo-s">S</span>
+            </div>
+            <div class="energy-ring"></div>
+            <div class="logo-dot"></div>
+        </div>
+        
+        <!-- Title and Tagline -->
+        <h1 class="shield-text">SHIELD</h1>
+        <p class="tagline">AI-powered protection against phishing attempts and malicious URLs</p>
+        
+        <!-- Simplified Credits Section (Team Members Removed) -->
+        <div class="credits-container">
+            <div class="credits-panel">
+                <div class="credits-message">Developed by SHIELD Security</div>
+            </div>
+        </div>
+        
+        <!-- Skip Button and Loading Bar -->
+        <button class="skip-button" id="skipButton">Skip Intro</button>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+        <div class="loading-text">Initializing Protection...</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const introContainer = document.querySelector('.intro-container');
+            const particlesContainer = document.getElementById('particles');
+            const dataFlowContainer = document.getElementById('dataFlow');
+            const binaryBgContainer = document.getElementById('binaryBg');
+            const skipButton = document.getElementById('skipButton');
+
+            // Generate Particles
+            const particleCount = 50;
+            const colors = ['#1e90ff', '#4285f4', '#00b7eb', '#ffffff'];
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 4 + 1;
+                const x = Math.random() * 100;
+                const drift = (Math.random() - 0.5) * 50;
+                const duration = Math.random() * 8 + 6;
+                const delay = Math.random() * 15;
+                const opacity = Math.random() * 0.5 + 0.2;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.setProperty('--x', `${x}vw`);
+                particle.style.setProperty('--drift', `${drift}px`);
+                particle.style.setProperty('--duration', `${duration}s`);
+                particle.style.setProperty('--delay', `${delay}s`);
+                particle.style.setProperty('--opacity', opacity);
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = color;
+                particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+                particlesContainer.appendChild(particle);
+            }
+
+            // Generate Digital Data Lines
+            const lineCount = 20;
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.classList.add('data-line');
+                const y = Math.random() * 100;
+                const width = Math.random() * 300 + 100;
+                const duration = Math.random() * 3 + 2;
+                const delay = Math.random() * 5;
+                line.style.top = `${y}%`;
+                line.style.width = `${width}px`;
+                line.style.left = `${Math.random() * 100}%`;
+                line.style.animation = `fadeIn ${duration}s ${delay}s infinite alternate`;
+                dataFlowContainer.appendChild(line);
+            }
+
+            // Generate Binary Data Stream
+            const columnCount = 20;
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.classList.add('binary-column');
+                const x = Math.random() * 100;
+                const duration = Math.random() * 15 + 10;
+                const delay = Math.random() * 10;
+                column.style.left = `${x}%`;
+                column.style.setProperty('--duration', `${duration}s`);
+                column.style.setProperty('--delay', `${delay}s`);
+                let binaryContent = '';
+                const length = Math.floor(Math.random() * 30) + 20;
+                for (let j = 0; j < length; j++) {
+                    binaryContent += Math.random() > 0.5 ? '1' : '0';
+                    if (j % 8 === 7) binaryContent += '<br>';
+                }
+                column.innerHTML = binaryContent;
+                binaryBgContainer.appendChild(column);
+            }
+
+            // Animation Duration
+            const animationDuration = 14000;
+
+            // Skip Button Functionality
+            skipButton.addEventListener('click', () => {
+                introContainer.classList.add('fade-out');
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 2000);
+            });
+
+            // Fade out
+            setTimeout(() => {
+                introContainer.classList.add('fade-out');
+            }, animationDuration);
+
+            // Redirect
+            setTimeout(() => {
+                window.location.href = 'http://127.0.0.1:5000/'; // Replace with your main app URL
+            }, animationDuration + 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build The Wall - Great Zimbabwe Wall</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            margin: 0;
+        }
+
+        .wall-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            border: 2px solid #333;
+            background-color: #D9B48B; /* Color representing stone texture */
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .brick-wall {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .brick {
+            width: 90px;
+            height: 30px;
+            background-color: #8A6E4F; /* Brownish brick color */
+            border-radius: 4px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease-in-out;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="wall-container">
+        <div id="brick-wall" class="brick-wall"></div>
+    </div>
+    <button id="start-building">Start Building the Wall</button>
+
+    <script>
+        document.getElementById('start-building').addEventListener('click', startBuildingWall);
+
+        let brickCount = 0;
+        const totalBricks = 30; // Number of bricks to build
+        const brickWall = document.getElementById('brick-wall');
+
+        function startBuildingWall() {
+            // Reset the wall before starting to build again
+            brickWall.innerHTML = '';
+            brickCount = 0;
+            buildBrick();
+        }
+
+        function buildBrick() {
+            if (brickCount < totalBricks) {
+                const brick = document.createElement('div');
+                brick.classList.add('brick');
+                brickWall.appendChild(brick);
+                brickCount++;
+
+                // Adding a delay to simulate building one brick at a time
+                setTimeout(buildBrick, 500); // Delay of 500ms to build the next brick
+            }
+        }
+    </script>
+</body>
+</html>
